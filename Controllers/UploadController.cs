@@ -21,10 +21,10 @@ namespace azure_storage_api_core.Controllers
         }
 
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Upload([FromForm,Required] FormInfoModel formInfo, [FromForm,Required] IFormFile file)
+        [HttpPost("osman")]
+        public async Task<IActionResult> Upload([FromForm, Required] FormInfoModel formInfo, [FromForm] IFormFile file)
         {
-            var serviceResult = false;
+            var serviceResult = string.Empty;
             if (file.Length > 0)
             {
                 using (var ms = new MemoryStream())
@@ -35,8 +35,8 @@ namespace azure_storage_api_core.Controllers
                     // act on the Base64 data
                 }
             }
-            if (serviceResult)
-                return Ok();
+            if (!string.IsNullOrEmpty(serviceResult))
+                return Ok(serviceResult);
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }

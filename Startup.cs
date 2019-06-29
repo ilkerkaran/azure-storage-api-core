@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using azure_storage_api_core.Models;
 using azure_storage_api_core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,17 +29,25 @@ namespace azure_storage_api_core
         {
             //DI Configurations
             ConfigureDependencies(services);
+            ConfigureSettings(services);
 
-
-
-
+            services.AddOptions();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
+        public void ConfigureSettings(IServiceCollection services)
+        {
+            services.Configure<AzureStorageSettings>(Configuration.GetSection(nameof(AzureStorageSettings)));
+            services.AddSingleton<AzureStorageSettings>();
+        }
 
         public void ConfigureDependencies(IServiceCollection services)
         {
             services.AddScoped<IStorageService, AzureStorageService>();
+
+
+
+
 
         }
 
@@ -54,8 +63,6 @@ namespace azure_storage_api_core
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }
