@@ -21,7 +21,7 @@ namespace azure_storage_api_core.Controllers
         }
 
 
-        [HttpPost("osman")]
+        [HttpPost()]
         public async Task<IActionResult> Upload([FromForm, Required] FormInfoModel formInfo, [FromForm] IFormFile file)
         {
             var serviceResult = string.Empty;
@@ -31,7 +31,7 @@ namespace azure_storage_api_core.Controllers
                 {
                     file.CopyTo(ms);
                     var fileData = ms.ToArray();
-                    serviceResult = await storageService.Upload(fileData);
+                    serviceResult = await storageService.Upload(fileData,formInfo.SecureStore);
                     // act on the Base64 data
                 }
             }

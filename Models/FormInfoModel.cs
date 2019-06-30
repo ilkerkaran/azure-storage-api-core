@@ -5,5 +5,6 @@ namespace azure_storage_api_core.Models
         public string ExtensionName { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool SecureStore { get; set; }
     }
 }

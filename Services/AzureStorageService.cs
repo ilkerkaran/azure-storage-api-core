@@ -20,15 +20,14 @@ namespace azure_storage_api_core.Services
             storageAccount = CloudStorageAccount.Parse(settings.StorageConnectionString);
         }
 
-        public async Task<string> Upload(byte[] fileData)
+        public async Task<string> Upload(byte[] fileData, bool securedStorage)
         {
-
             try
             {
                 var blobClinet = storageAccount.CreateCloudBlobClient();
 
                 CloudBlobClient cloudBlobClient = storageAccount.CreateCloudBlobClient();
-                string strContainerName = "white-elephant";
+                string strContainerName = securedStorage ? "secured-white-elephant" : "white-elephant";
                 CloudBlobContainer cloudBlobContainer = cloudBlobClient.GetContainerReference(strContainerName);
                 string fileName = this.GenerateFileName();
 
@@ -50,7 +49,7 @@ namespace azure_storage_api_core.Services
 
         private string GenerateFileName()
         {
-            return $"{blobfolder}/{Guid.NewGuid().ToString("n")}.jpg";
+            return $"{DateTime.UtcNow.ToString("MM-dd")}/{Guid.NewGuid().ToString("n")}.jpg";
         }
     }
 }
