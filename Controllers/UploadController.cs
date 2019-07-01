@@ -31,7 +31,7 @@ namespace azure_storage_api_core.Controllers
                 {
                     file.CopyTo(ms);
                     var fileData = ms.ToArray();
-                    serviceResult = await storageService.Upload(fileData,formInfo.SecureStore);
+                    serviceResult = await storageService.Upload(fileData, formInfo.SecureStore);
                     // act on the Base64 data
                 }
             }
@@ -39,6 +39,26 @@ namespace azure_storage_api_core.Controllers
                 return Ok(serviceResult);
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+        [HttpGet()]
+        public async Task<IActionResult> Get([FromRoute]string fullAddress)
+        {
+            return Ok();
+
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetSecuredSample()
+        {
+            var blobAddressWithSas = storageService.GetSecuredDocumentAddress();
+            return Ok(blobAddressWithSas);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetSample()
+        {
+            var blobAddressWithSas = storageService.GetDocumentAddress();
+            return Ok(blobAddressWithSas);
         }
     }
 }

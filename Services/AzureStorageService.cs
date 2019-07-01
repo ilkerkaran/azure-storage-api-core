@@ -9,7 +9,6 @@ namespace azure_storage_api_core.Services
 {
     public class AzureStorageService : IStorageService
     {
-        private const string blobfolder = "sampleFolder";
         private readonly AzureStorageSettings settings;
         private readonly CloudStorageAccount storageAccount;
 
@@ -46,6 +45,71 @@ namespace azure_storage_api_core.Services
             }
         }
 
+        public string GetSecuredDocumentAddress()
+        {
+
+            var blobClinet = storageAccount.CreateCloudBlobClient();
+
+            CloudBlobClient cloudBlobClient = storageAccount.CreateCloudBlobClient();
+            string strContainerName = "secured-white-elephant";
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(strContainerName);
+            var permissions = container.GetPermissions();
+            var sampleBlob = "06-30/94380671993e4d7cb28013a77290d321.jpg";
+
+            string sasBlobToken;
+
+            // Get a reference to a blob within the container.
+            // Note that the blob may not exist yet, but a SAS can still be created for it.
+            CloudBlockBlob blob = container.GetBlockBlobReference(sampleBlob);
+            // Create a new access policy and define its constraints.
+            // Note that the SharedAccessBlobPolicy class is used both to define the parameters of an ad hoc SAS, and
+            // to construct a shared access policy that is saved to the container's shared access policies.
+            SharedAccessBlobPolicy adHocSAS = new SharedAccessBlobPolicy()
+            {
+                // When the start time for the SAS is omitted, the start time is assumed to be the time when the storage service receives the request.
+                // Omitting the start time for a SAS that is effective immediately helps to avoid clock skew.
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24),
+                Permissions = SharedAccessBlobPermissions.Read
+            };
+
+            // Generate the shared access signature on the blob, setting the constraints directly on the signature.
+            sasBlobToken = blob.GetSharedAccessSignature(adHocSAS);
+
+            return blob.Uri + sasBlobToken;
+        }
+
+
+        public string GetDocumentAddress()
+        {
+
+            var blobClinet = storageAccount.CreateCloudBlobClient();
+
+            CloudBlobClient cloudBlobClient = storageAccount.CreateCloudBlobClient();
+            string strContainerName = "white-elephant";
+            CloudBlobContainer container = cloudBlobClient.GetContainerReference(strContainerName);
+            var sampleBlob = "sampleFolder/716176775f694ab3a942ef05065be30e.jpg";
+
+            string sasBlobToken;
+            var permissions = container.GetPermissions();
+            // Get a reference to a blob within the container.
+            // Note that the blob may not exist yet, but a SAS can still be created for it.
+            CloudBlockBlob blob = container.GetBlockBlobReference(sampleBlob);
+            // Create a new access policy and define its constraints.
+            // Note that the SharedAccessBlobPolicy class is used both to define the parameters of an ad hoc SAS, and
+            // to construct a shared access policy that is saved to the container's shared access policies.
+            SharedAccessBlobPolicy adHocSAS = new SharedAccessBlobPolicy()
+            {
+                // When the start time for the SAS is omitted, the start time is assumed to be the time when the storage service receives the request.
+                // Omitting the start time for a SAS that is effective immediately helps to avoid clock skew.
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(24),
+                Permissions = SharedAccessBlobPermissions.Read
+            };
+
+            // Generate the shared access signature on the blob, setting the constraints directly on the signature.
+            sasBlobToken = blob.GetSharedAccessSignature(adHocSAS);
+
+            return blob.Uri + sasBlobToken;
+        }
 
         private string GenerateFileName()
         {
